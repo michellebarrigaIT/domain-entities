@@ -2,10 +2,14 @@ import { Money } from '../value-objects/money.value';
 
 export class OrderItem {
   constructor(
-    public readonly productId: string,
+    private readonly productId: string,
     private price: Money,
     private quantity: number,
   ) {}
+
+  getProductId(): string {
+    return this.productId;
+  }
 
   getQuantity(): number {
     return this.quantity;

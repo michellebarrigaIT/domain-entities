@@ -30,13 +30,15 @@ export class Order {
     return this.total;
   }
 
-  addItem(item: OrderItem) {
-    const exists = this.items.find((i) => i.productId === item.productId);
+  addItem(itemToAdd: OrderItem) {
+    const exists = this.items.find(
+      (item) => item.getProductId() === itemToAdd.getProductId(),
+    );
 
     if (exists) {
-      exists.increaseQuantity(item.getQuantity());
+      exists.increaseQuantity(itemToAdd.getQuantity());
     } else {
-      this.items.push(item);
+      this.items.push(itemToAdd);
     }
 
     this.calculateTotal();
