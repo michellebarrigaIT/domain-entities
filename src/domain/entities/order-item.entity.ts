@@ -1,7 +1,9 @@
+import { Money } from '../value-objects/money.value';
+
 export class OrderItem {
   constructor(
     public readonly productId: string,
-    private price: number,
+    private price: Money,
     private quantity: number,
   ) {}
 
@@ -9,11 +11,11 @@ export class OrderItem {
     return this.quantity;
   }
 
-  increaseQuantity(qty: number) {
-    this.quantity += qty;
+  increaseQuantity(quantityToIncrease: number) {
+    this.quantity += quantityToIncrease;
   }
 
-  getSubtotal(): number {
-    return this.price * this.quantity;
+  getSubtotal(): Money {
+    return this.price.multiply(this.quantity);
   }
 }

@@ -1,3 +1,4 @@
+import { Money } from '../value-objects/money.value';
 import { OrderItem } from './order-item.entity';
 import { v4 as uuid } from 'uuid';
 
@@ -6,7 +7,7 @@ export class Order {
   private status: 'CREATED' | 'PAID' | 'SHIPPED' | 'CANCELLED' = 'CREATED';
 
   constructor(
-    private readonly _id: string = uuid(),
+    private readonly id: string = uuid(),
     private customerId: string,
     private items: OrderItem[] = [],
   ) {
@@ -14,7 +15,7 @@ export class Order {
   }
 
   getId(): string {
-    return this._id;
+    return this.id;
   }
 
   getStatus(): string {
@@ -31,11 +32,13 @@ export class Order {
 
   addItem(item: OrderItem) {
     const exists = this.items.find((i) => i.productId === item.productId);
+
     if (exists) {
       exists.increaseQuantity(item.getQuantity());
     } else {
       this.items.push(item);
     }
+
     this.calculateTotal();
   }
 
@@ -43,6 +46,7 @@ export class Order {
     if (this.status !== 'CREATED') {
       throw new Error('Order cannot be paid in its current status.');
     }
+
     this.status = 'PAID';
   }
 
@@ -50,6 +54,7 @@ export class Order {
     if (this.status !== 'PAID') {
       throw new Error('Only paid orders can be shipped.');
     }
+
     this.status = 'SHIPPED';
   }
 
@@ -57,10 +62,13 @@ export class Order {
     if (this.status === 'SHIPPED') {
       throw new Error('Shipped orders cannot be cancelled.');
     }
+
     this.status = 'CANCELLED';
   }
 
   private calculateTotal() {
-    this.total = this.items.reduce((sum, item) => sum + item.getSubtotal(), 0);
+    return this.items
+      .map((i) => i.getSubtotal())
+      .reduce((acc, val) => acc.add(val), new Money(0));
   }
 }
