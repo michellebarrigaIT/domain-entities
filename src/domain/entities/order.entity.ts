@@ -70,8 +70,10 @@ export class Order {
   }
 
   private calculateTotal() {
-    return this.items
+    const totalMoney = this.items
       .map((i) => i.getSubtotal())
       .reduce((acc, val) => acc.add(val), new Money(0));
+
+    this.total = totalMoney.getAmount();
   }
 }
