@@ -1,10 +1,11 @@
+import { OrderStatus } from 'domain/enums/orderStatus.enum';
 import { Money } from '../value-objects/money.value';
 import { OrderItem } from './order-item.entity';
 import { v4 as uuid } from 'uuid';
 
 export class Order {
   private total: number = 0;
-  private status: 'CREATED' | 'PAID' | 'SHIPPED' | 'CANCELLED' = 'CREATED';
+  private status: OrderStatus = OrderStatus.CREATED;
 
   constructor(
     private readonly id: string = uuid(),
@@ -45,11 +46,11 @@ export class Order {
   }
 
   pay() {
-    if (this.status !== 'CREATED') {
+    if (this.status !== OrderStatus.CREATED) {
       throw new Error('Order cannot be paid in its current status.');
     }
 
-    this.status = 'PAID';
+    this.status = OrderStatus.PAID;
   }
 
   ship() {
@@ -57,15 +58,15 @@ export class Order {
       throw new Error('Only paid orders can be shipped.');
     }
 
-    this.status = 'SHIPPED';
+    this.status = OrderStatus.SHIPPED;
   }
 
   cancel() {
-    if (this.status === 'SHIPPED') {
+    if (this.status === OrderStatus.SHIPPED) {
       throw new Error('Shipped orders cannot be cancelled.');
     }
 
-    this.status = 'CANCELLED';
+    this.status = OrderStatus.CANCELLED;
   }
 
   private calculateTotal() {
